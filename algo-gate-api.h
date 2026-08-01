@@ -307,6 +307,24 @@ int std_get_work_data_size();
 
 // Called from main to initialize all gate functions and algo-specific data
 // by calling the algo's register function.
+
+// Forward declarations for supported algo registration functions
+bool register_neoscrypt_algo( algo_gate_t* gate );
+bool register_scrypt_algo( algo_gate_t* gate );
+bool register_sha256d_algo( algo_gate_t* gate );
+bool register_sha256dt_algo( algo_gate_t* gate );
+bool register_sha256q_algo( algo_gate_t* gate );
+bool register_sha256t_algo( algo_gate_t* gate );
+bool register_whirlpool_algo( algo_gate_t* gate );
+bool register_whirlpoolx_algo( algo_gate_t* gate );
+bool register_yescrypt_algo( algo_gate_t* gate );
+bool register_yescryptr8_algo( algo_gate_t* gate );
+bool register_yescryptr8g_algo( algo_gate_t* gate );
+bool register_yescryptr16_algo( algo_gate_t* gate );
+bool register_yescryptr32_algo( algo_gate_t* gate );
+bool register_yespower_algo( algo_gate_t* gate );
+bool register_yespowerr16_algo( algo_gate_t* gate );
+bool register_yespower_b2b_algo( algo_gate_t* gate );
 bool register_algo_gate( int algo, algo_gate_t *gate );
 
 // Called by algos to verride any default gate functions that are applicable
