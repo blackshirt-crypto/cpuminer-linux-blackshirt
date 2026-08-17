@@ -57,6 +57,9 @@ cpuminer_SOURCES = \
   algo/sha/hmac-sha256-hash.c \
   algo/sha/hmac-sha256-hash-4way.c \
   algo/sha/sha256d.c \
+  algo/civiclight/civiclight-gate.c \
+  algo/civiclight/yespower/yespower-opt.c \
+  algo/civiclight/yespower/yespower_sha256.c \
   algo/sha/sha256d-4way.c \
   algo/sha/sha256t-gate.c \
   algo/sha/sha256t-4way.c \

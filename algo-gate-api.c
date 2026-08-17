@@ -293,6 +293,7 @@ bool register_algo_gate( int algo, algo_gate_t *gate )
 
   switch ( algo )
   {
+    case ALGO_CIVICLIGHT:   rc = register_civiclight_algo    ( gate ); break;
     case ALGO_NEOSCRYPT:    rc = register_neoscrypt_algo     ( gate ); break;
     case ALGO_SCRYPT:       rc = register_scrypt_algo        ( gate ); break;
     case ALGO_SHA256D:      rc = register_sha256d_algo       ( gate ); break;

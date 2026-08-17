@@ -309,6 +309,7 @@ int std_get_work_data_size();
 // by calling the algo's register function.
 
 // Forward declarations for supported algo registration functions
+bool register_civiclight_algo( algo_gate_t* gate );
 bool register_neoscrypt_algo( algo_gate_t* gate );
 bool register_scrypt_algo( algo_gate_t* gate );
 bool register_sha256d_algo( algo_gate_t* gate );
