@@ -48,6 +48,7 @@ out(WHITE, f"Starting miner | threads: {threads} | algo: {algo}")
 try:
     for raw in sys.stdin:
         line = raw.strip()
+        line = re.sub(r"\[[0-9;]*m", "", line)  # strip ANSI color codes
         now  = time.time()
 
         # Connecting
