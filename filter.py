@@ -36,6 +36,7 @@ block     = '--'
 netdiff   = '--'
 accepted  = 0
 rejected  = 0
+last_diff = '--'
 last_hr   = 0
 HR_INTERVAL = 5
 
@@ -87,23 +88,28 @@ try:
             m = re.search(r'\(([0-9.]+)h/s\)', line)
             if m: hashrate = m.group(1)
 
-        # Accepted share — multiple possible formats
-        elif re.search(r'\d+ Accepted \d+', line) or re.search(r'^\d+ A\d+ S\d+ R\d+ B\d+', line):
+        # Submitted — capture diff for next accept/reject line
+        elif 'Submitted Diff' in line:
+            m = re.search(r'Submitted Diff ([0-9.e+-]+)', line)
+            if m: last_diff = m.group(1)
+
+        # Accepted share
+        elif re.search(r'\d+ Accepted \d+', line):
             accepted += 1
-            d = re.search(r'Submitted Diff ([0-9.e+-]+)', line)
-            diff_str = d.group(1) if d else '--'
             total = accepted + rejected
             ratio = f"{100*accepted/total:.1f}%" if total > 0 else "100.0%"
-            out(GREEN, f"✓ ACCEPTED  #{accepted} | {ratio} | {rejected} rejected | diff {diff_str}")
+            out(GREEN, f"✓ ACCEPTED  #{accepted} | {ratio} | {rejected} rejected | diff {last_diff}")
+            last_diff = '--'
 
         # Rejected share
-        elif re.search(r'Rejected \d+', line) and 'Share' not in line and '%' not in line:
+        elif re.search(r'\d+ A\d+ S\d+ Rejected', line):
             rejected += 1
             r = re.search(r'Reject reason: (.+)', line)
             reason = r.group(1).strip() if r else 'unknown'
             total = accepted + rejected
             ratio = f"{100*accepted/total:.1f}%" if total > 0 else "0.0%"
             out(RED, f"✗ REJECTED  #{accepted} | {ratio} | {rejected} rejected | {reason}")
+            last_diff = '--' 
 
         # Block solved
         elif 'BLOCK SOLVED' in line or ('Solved' in line and 'block' in line.lower()):
