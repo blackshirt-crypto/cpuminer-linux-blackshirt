@@ -6,7 +6,7 @@
 
 INSTALL_DIR=~/cpuminer-blackshirt
 REPO="https://github.com/blackshirt-crypto/cpuminer-linux-blackshirt/releases/download/v26.2"
-BINARY="cpuminer-x86-v26.2"
+BINARY="cpuminer-x86-blackshirt-v26.2"
 
 clear
 echo ""
