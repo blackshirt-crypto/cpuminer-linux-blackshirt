@@ -1,17 +1,17 @@
 #!/bin/bash
 # setup-cpuminer-blackshirt.sh
-# One-file installer for cpuminer-blackshirt ARM64
+# One-file installer for cpuminer-blackshirt x86 Linux
 # Downloads binary, filter, asks config, generates start script
 # Blackshirt Crypto — blkshirtpool.com
 
 INSTALL_DIR=~/cpuminer-blackshirt
-REPO="https://github.com/blackshirt-crypto/cpuminer-android-blackshirt/releases/download/v26.2"
-BINARY="cpuminer-arm64-v26.2"
+REPO="https://github.com/blackshirt-crypto/cpuminer-linux-blackshirt/releases/download/v26.2"
+BINARY="cpuminer-x86-v26.2"
 
 clear
 echo ""
 echo "  ╔══════════════════════════════════════╗"
-echo "  ║   cpuminer-blackshirt  ARM64 Setup   ║"
+echo "  ║   cpuminer-blackshirt  x86 Setup     ║"
 echo "  ║   Blackshirt Crypto                  ║"
 echo "  ╚══════════════════════════════════════╝"
 echo ""
