@@ -84,7 +84,8 @@ if [ -z "$POOL" ]; then
     exit 1
 fi
 
-read -p "  Backup pool (optional, press Enter to skip): " POOL2
+POOL2=""
+echo "  Note: cpuminer-opt supports one pool only. Use reconfigure.sh to switch pools."
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -119,11 +120,11 @@ echo "  Tip: on big.LITTLE phones, 4-6 threads often outperforms all cores"
 echo "  Test different values to find your hashrate sweet spot"
 echo ""
 while true; do
-    read -p "  Threads (1-$MAX_THREADS): " THREADS
-    if [[ "$THREADS" =~ ^[0-9]+$ ]] && [ "$THREADS" -ge 1 ] && [ "$THREADS" -le "$MAX_THREADS" ]; then
+    read -p "  Threads (1 or more, your device has $MAX_THREADS cores): " THREADS
+    if [[ "$THREADS" =~ ^[0-9]+$ ]] && [ "$THREADS" -ge 1 ]; then
         break
     fi
-    echo "  Enter a number between 1 and $MAX_THREADS."
+    echo "  Please enter a number greater than 0."
 done
 
 # Generate start script
