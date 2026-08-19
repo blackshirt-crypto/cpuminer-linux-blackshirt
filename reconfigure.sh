@@ -84,7 +84,7 @@ show_config() {
     echo "  └────────────────────────────────────────────┘"
     echo ""
     echo "  What would you like to change?"
-    echo "  1) Pool addresses (primary & backup)"
+    echo "  1) Pool address"
     echo "  2) Wallet address"
     echo "  3) Worker name"
     echo "  4) Password"
@@ -100,22 +100,16 @@ read -p "  Choice: " WHAT
 case $WHAT in
     1)
         echo ""
-        echo "  Current primary: $CUR_POOL"
-        read -p "  New primary pool (Enter to keep): " NEW_POOL
+        echo "  Current pool: $CUR_POOL"
+        echo "  Format: stratum+tcp://HOST:PORT"
+        read -p "  New pool address (Enter to keep): " NEW_POOL
         if [ -n "$NEW_POOL" ]; then
             CUR_POOL="$NEW_POOL"
+            sed -i "s|^POOL=.*|POOL=$NEW_POOL|" "$SELECTED"
+            echo "  Pool updated."
+        else
+            echo "  No change."
         fi
-        echo ""
-        echo "  Current backup: ${CUR_POOL2:-(none)}"
-        read -p "  New backup pool (Enter to keep, type 'none' to remove): " NEW_POOL2
-        if [ "$NEW_POOL2" = "none" ]; then
-            CUR_POOL2=""
-        elif [ -n "$NEW_POOL2" ]; then
-            CUR_POOL2="$NEW_POOL2"
-        fi
-        sed -i "s|^POOL=.*|POOL=$CUR_POOL|" "$SELECTED"
-        sed -i "s|^POOL2=.*|POOL2=$CUR_POOL2|" "$SELECTED"
-        echo "  Pool updated."
         ;;
     2)
         echo ""

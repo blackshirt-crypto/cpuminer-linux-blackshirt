@@ -1,112 +1,155 @@
 # cpuminer-linux-blackshirt
 
-A focused, streamlined CPU miner built on [cpuminer-opt v26.1](https://github.com/JayDDee/cpuminer-opt) by JayDDee, maintained by [blackshirt-crypto](https://github.com/blackshirt-crypto).
+x86/Linux CPU miner — optimized for **civiclight**, yespower, yescrypt, sha256d, scrypt, and whirlpool. Built for spec mining small coins before difficulty rises.
 
-## About
-
-cpuminer-linux-blackshirt is not a ground-up rewrite — it is a deliberately stripped-down fork of cpuminer-opt focused on a small set of CPU-friendly algorithms. The goal is a cleaner, faster-building binary without the overhead of 40+ algorithms most CPU miners will never use.
-
-### Compared to stock cpuminer-opt
-
-| | cpuminer-opt 26.1 | cpuminer-linux-blackshirt |
-|---|---|---|
-| Algorithms | 40+ | 5 (focused) |
-| Build time | ~5 minutes | ~2 minutes |
-| Binary size | ~4MB | ~500KB |
-| Hashrate (yespower) | Baseline | ~1-3% improvement* |
-| Target platform | x86_64 | x86_64 + ARM64 |
-
-*Hashrate improvement comes from compiler flag optimizations (`-march=native`) and reduced binary overhead. Results vary by CPU.
-
-> **Honest note:** If you want to mine every possible algorithm, use JayDDee's original cpuminer-opt. This fork is for miners who know what they want to mine and want a leaner, purpose-built binary.
-
-## Supported Algorithms
-
-| Algorithm | Coins | ARM Friendly |
-|-----------|-------|-------------|
-| `yespower` | Cryply, CPUpower, Sugar | ✅ Excellent |
-| `yespower-r16` | Yenten (YTN) | ✅ Excellent |
-| `yescrypt` | Fennec (FNNC), various | ✅ Good |
-| `yescryptr16` | Various | ✅ Good |
-| `sha256d` | Small SHA coins | ✅ Good |
-| `scrypt` | Small scrypt coins* | ✅ Good |
-| `whirlpool` | Capstash, spec mining | ✅ Good |
-
-*Scrypt for Litecoin/Dogecoin is ASIC dominated — not recommended. Focus on smaller coins.
-
-## Quick Start
-
-### Requirements
+## ⚡ Quick Start — One Command Setup (Recommended)
 
 ```bash
-sudo apt-get install -y build-essential automake autoconf libtool \
-    libcurl4-openssl-dev libssl-dev libgmp-dev zlib1g-dev
+curl -L -o setup-cpuminer-blackshirt.sh https://github.com/blackshirt-crypto/cpuminer-linux-blackshirt/releases/download/v26.2/setup-cpuminer-blackshirt.sh
+chmod +x setup-cpuminer-blackshirt.sh
+./setup-cpuminer-blackshirt.sh
 ```
 
-### Build
+The setup script will:
+1. Download the pre-built x86 binary into `~/cpuminer-blackshirt/`
+2. Ask you for: algorithm, pool, wallet, worker name, password, threads
+3. Save your config as `~/cpuminer-blackshirt/start-{algo}.sh`
+4. Start mining with a clean colored display
+
+**To mine again after setup:**
+```bash
+~/cpuminer-blackshirt/start-civiclight.sh
+```
+
+**To change settings:**
+```bash
+~/cpuminer-blackshirt/reconfigure.sh
+```
+
+## 🔧 Alternative — Build from Source
 
 ```bash
 git clone https://github.com/blackshirt-crypto/cpuminer-linux-blackshirt.git
 cd cpuminer-linux-blackshirt
-./build.sh
+./autogen.sh
+CFLAGS="-O3 -march=native" ./configure --with-curl
+make -j$(nproc)
 ```
 
-### Usage
+## 🎯 Supported Algorithms
+
+Enter the TYPE — not the coin ticker (e.g. type `civiclight` not `CIVIC`):
+
+| Algorithm | Coin | Performance |
+|-----------|------|------------|
+| `civiclight` | **CivicNet (CIVIC)** | ✅ Excellent |
+| `yespower` | Small yespower coins | ✅ Excellent |
+| `yespowerr16` | Yenten (YTN) | ✅ Excellent |
+| `yespower-b2b` | blake2b yespower variants | ✅ Excellent |
+| `yescrypt` | various yescrypt coins | ✅ Good |
+| `yescryptr8` | yescrypt r8 variants | ✅ Good |
+| `yescryptr16` | Fennec (FNNC) | ✅ Good |
+| `yescryptr32` | yescrypt r32 variants | ✅ Good |
+| `sha256d` | Small SHA-256d coins | ✅ Good |
+| `scrypt` | Small scrypt coins* | ✅ Good |
+| `whirlpool` | CapStash (CAP) | ✅ Good |
+
+> *Scrypt for Litecoin/Dogecoin is ASIC dominated. Focus on smaller coins.
+
+## 🪙 CivicNet (CIVIC) — Featured
+
+CivicNet uses the **civiclight** algorithm: SHA256d → SHA256 → yespower(N=2048, r=8) → XOR → SHA256. CPU-only with hardware SHA256 and AES acceleration.
 
 ```bash
-# yespower
-./cpuminer -a yespower -o stratum+tcp://POOL:PORT -u WALLET -p x -t 8
-
-# yescrypt (Fennec/FNNC)
-./cpuminer -a yescryptr16 -o stratum+tcp://POOL:PORT -u WALLET -p x -t 8
-
-# sha256d
-./cpuminer -a sha256d -o stratum+tcp://POOL:PORT -u WALLET -p x -t 8
-
-# whirlpool
-./cpuminer -a whirlpool -o stratum+tcp://POOL:PORT -u WALLET -p x -t 8
+~/cpuminer-blackshirt/start-civiclight.sh
+# or manually:
+~/cpuminer-blackshirt/cpuminer-blackshirt -a civiclight -o stratum+tcp://POOL:PORT -u WALLET -p c=CIVIC -t 12
 ```
 
-### Benchmark
+## 📈 civiclight x86 Hashrates (observed)
+
+| CPU | Threads | Hashrate |
+|-----|---------|----------|
+| AMD Ryzen 5 3600 | 12 | ~2500 H/s |
+| Intel Core2 Duo P8600 | 2 | ~300 H/s |
+
+## 🔑 YIIMP Pool Password Options
+
+Most pools accept `-p x` but YIIMP-based pools support extended options:
+
+| Password | Effect |
+|----------|--------|
+| `x` | Standard default |
+| `c=CIVIC` | Required for civiclight on NitroPool/YIIMP |
+| `c=CIVIC,m=solo` | Solo mining mode on YIIMP |
+| `c=CIVIC,ID=MyWorker` | Custom worker name on YIIMP |
+| `c=CIVIC,m=solo,ID=Rig1` | Solo mode + custom worker name |
+
+> MiningCore pools (like Blackshirt Pool) use `-p x` and worker name is appended to wallet: `-u WALLET.WorkerName`
+
+## ⛏️ Pool Examples
 
 ```bash
-./cpuminer -a yespower --benchmark -t 8
+# Blackshirt Pool (MiningCore, solo)
+~/cpuminer-blackshirt/cpuminer-blackshirt -a civiclight -o stratum+tcp://blkshirtpool.com:4353 -u YOUR_CIVIC_ADDRESS.Rig1 -p x -t 12
+
+# NitroPool (YIIMP, proportional)
+~/cpuminer-blackshirt/cpuminer-blackshirt -a civiclight -o stratum+tcp://us.nitropool.net:3032 -u YOUR_CIVIC_ADDRESS -p c=CIVIC -t 12
+
+# NitroPool (YIIMP, solo mode)
+~/cpuminer-blackshirt/cpuminer-blackshirt -a civiclight -o stratum+tcp://us.nitropool.net:3032 -u YOUR_CIVIC_ADDRESS -p c=CIVIC,m=solo,ID=Rig1 -t 12
 ```
 
-## Thread Count Guide
+## 🔄 Reconfigure Settings
 
-For yespower specifically — hyperthreading **hurts** performance due to memory bandwidth contention. Use physical core count only:
+```bash
+~/cpuminer-blackshirt/reconfigure.sh
+```
 
-| CPU | Physical Cores | Recommended Threads |
-|-----|---------------|-------------------|
-| Ryzen 5 3600 | 6 | 8 |
-| Ryzen 7 5700X | 8 | 8-10 |
-| Budget phones | 4 | 4 |
-| Flagship phones | 8 | 6-8 |
+Shows your current config and lets you update pool, wallet, worker, password, or threads.
 
-> **Tip:** Test with `-t N --benchmark` and find your own sweet spot. More threads ≠ more hashrate for memory-hard algorithms.
+## 🛠️ Troubleshooting
 
-## Build Scripts
+**Missing libraries:**
+```bash
+sudo apt-get install libboost-filesystem-dev libcurl4-openssl-dev libjansson-dev
+```
 
-| Script | Target | Flags |
-|--------|--------|-------|
-| `build.sh` | x86_64 Linux | `-march=native` |
-| `build-arm.sh` | ARM64/Android | `-march=armv8-a+crypto+sha2+aes` |
+**Miner won't connect:**
+- Verify pool address format: `stratum+tcp://HOST:PORT`
+- For NitroPool/YIIMP civiclight use `-p c=CIVIC` not `-p x`
+- For MiningCore pools use `-p x`
 
-## Android / Termux
+**Not showing on YIIMP pool dashboard:**
+- Use correct password format (see YIIMP Password Options above)
+- Allow 3-5 minutes after first share for stats to appear
 
-For Android mining, see the companion repo:
-[cpuminer-android-blackshirt](https://github.com/blackshirt-crypto/cpuminer-android-blackshirt)
+**Unknown algo error:**
+- Enter algorithm TYPE not coin ticker: `civiclight` not `CIVIC`, `yescryptr16` not `FNNC`
 
-## Credits & Attribution
+## 🆘 Resources
 
-- **cpuminer-opt v26.1** — Original optimized miner by [JayDDee](https://github.com/JayDDee/cpuminer-opt) — the foundation this project builds on
+- **Source code:** https://github.com/blackshirt-crypto/cpuminer-linux-blackshirt
+- **Android version:** https://github.com/blackshirt-crypto/cpuminer-android-blackshirt
+- **Blackshirt Pool:** https://blkshirtpool.com
+- **Mining Pool Stats:** https://miningpoolstats.stream
+
+## 🤝 Credits & Attribution
+
+- **cpuminer-blackshirt** — x86/Linux optimized fork by [blackshirt-crypto](https://github.com/blackshirt-crypto)
+- **cpuminer-opt v26.2** — Original optimized miner by [JayDDee](https://github.com/JayDDee/cpuminer-opt)
 - **cpuminer-multi** — Original multi-algo base by [tpruvot](https://github.com/tpruvot/cpuminer-multi)
-- **yespower/yescrypt** — Memory-hard KDF by Alexander Peslyak (Solar Designer)
+- **yescrypt/yespower** — Memory-hard KDF by Alexander Peslyak (Solar Designer)
+- **civiclight algorithm** — CivicNet / CivicLight developer: [github.com/CivicLight/CivicNet](https://github.com/CivicLight/CivicNet)
+- **civic_yespower reference** — nof8 @ [NitroPool](https://nitropool.net)
 
 All upstream code is open source under GPL-2.0.
 
-## License
+## ⚖️ Disclaimer
+
+Mining cryptocurrency involves risk. Monitor hardware temperatures and electricity costs.
+
+## 📝 License
 
 GPL-2.0 — see [COPYING](COPYING) for full license details.
 
